@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Grade Manager</title>
+
+<style>
+
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.container{
+    background:white;
+    padding:30px;
+    width:360px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#444;
+}
+
+input{
+    width:85%;
+    padding:10px;
+    margin:6px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:#667eea;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#5563c1;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+    margin-top:20px;
+}
+
+li{
+    background:#f4f6ff;
+    margin:8px 0;
+    padding:10px;
+    border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+}
+
+.gradeA{
+    color:green;
+    font-weight:bold;
+}
+
+.gradeB{
+    color:#0077ff;
+    font-weight:bold;
+}
+
+.gradeC{
+    color:orange;
+    font-weight:bold;
+}
+
+.gradeF{
+    color:red;
+    font-weight:bold;
+}
+
+.deleteBtn{
+    background:#ff4d4d;
+    padding:5px 8px;
+    font-size:12px;
+}
+
+.deleteBtn:hover{
+    background:#cc0000;
+}
+
+.stats{
+    margin-top:15px;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🎓 Student Grade Manager</h2>
+
+<input type="text" id="name" placeholder="Student Name"><br>
+
+<input type="number" id="marks" placeholder="Marks"><br>
+
+<button onclick="addStudent()">Add Student</button>
+
+<h3>Student List</h3>
+
+<ul id="studentList"></ul>
+
+<div class="stats" id="average"></div>
+
+</div>
+
+<script>
+
+// constructor
+function Student(name, marks){
+
+    this.name = name
+    this.marks = parseInt(marks)
+
+    this.getGrade = function(){
+
+        if(this.marks >= 90){
+            return "A"
+        }
+        else if(this.marks >= 75){
+            return "B"
+        }
+        else if(this.marks >= 50){
+            return "C"
+        }
+        else{
+            return "Fail"
+        }
+    }
+}
+
+let students = []
+
+function addStudent(){
+
+    let name = document.getElementById("name").value
+    let marks = document.getElementById("marks").value
+
+    if(name == "" || marks == ""){
+        alert("Enter name and marks")
+        return
+    }
+
+    let student = new Student(name, marks)
+
+    students.push(student)
+
+    displayStudents()
+
+    document.getElementById("name").value = ""
+    document.getElementById("marks").value = ""
+}
+
+function deleteStudent(index){
+
+    students.splice(index, 1)
+
+    displayStudents()
+}
+
+function displayStudents(){
+
+    let list = document.getElementById("studentList")
+
+    list.innerHTML = ""
+
+    let total = 0
+
+    for(let i = 0; i < students.length; i++){
+
+        let li = document.createElement("li")
+
+        let grade = students[i].getGrade()
+
+        let gradeClass = "gradeC"
+
+        if(grade == "A"){
+            gradeClass = "gradeA"
+        }
+        else if(grade == "B"){
+            gradeClass = "gradeB"
+        }
+        else if(grade == "C"){
+            gradeClass = "gradeC"
+        }
+        else{
+            gradeClass = "gradeF"
+        }
+
+        li.innerHTML =
+        students[i].name +
+        " | Marks: " + students[i].marks +
+        " | <span class='" + gradeClass + "'>" + grade + "</span>" +
+        " <button class='deleteBtn' onclick='deleteStudent(" + i + ")'>Delete</button>"
+
+        list.appendChild(li)
+
+        total += students[i].marks
+    }
+
+    let avg = students.length
+    ? (total / students.length).toFixed(1)
+    : 0
+
+    document.getElementById("average").innerText =
+    "Average Marks: " + avg
+}
+
+// press enter to add
+document.addEventListener("keypress", function(e){
+
+    if(e.key === "Enter"){
+        addStudent()
+    }
+})
+
+</script>
+
+</body>
+</html>
